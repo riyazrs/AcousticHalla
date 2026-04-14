@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcousticHalla | Cognitive Enrichment for Wildlife</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E392A;
+            --accent: #D4FF00;
+            --text-light: #F4F6F6;
+            --text-dark: #111;
+        }
+        body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--primary); color: var(--text-light); overflow-x: hidden; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(30, 57, 42, 0.8), rgba(30, 57, 42, 0.9)), url('https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?q=80&w=2072&auto=format&fit=crop') center/cover no-repeat;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 5rem; margin-bottom: 10px; color: var(--accent); line-height: 1.1; }
+        .hero p { font-size: 1.5rem; max-width: 800px; margin-bottom: 40px; opacity: 0.9; }
+        .btn {
+            background-color: var(--accent); color: var(--primary);
+            padding: 15px 40px; font-size: 1.2rem; font-weight: 600;
+            text-decoration: none; border-radius: 50px; text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { background-color: #fff; transform: translateY(-3px); }
+        .features { display: flex; padding: 100px 5%; background: #fff; color: var(--text-dark); }
+        .feature-img { flex: 1; background: url('https://images.unsplash.com/photo-1511871893393-82e9c16b81e3?q=80&w=2070&auto=format&fit=crop') center/cover; border-radius: 20px; min-height: 500px; }
+        .feature-text { flex: 1; padding: 0 60px; display: flex; flex-direction: column; justify-content: center; }
+        .feature-text h2 { font-size: 3.5rem; color: var(--primary); margin-bottom: 20px; }
+        .feature-text p { font-size: 1.2rem; line-height: 1.6; color: #555; }
+        .pricing { padding: 100px 20px; text-align: center; }
+        .pricing h2 { font-size: 3rem; color: var(--accent); margin-bottom: 50px; }
+        .card-container { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .card { background: rgba(255,255,255,0.05); padding: 50px; border-radius: 20px; width: 300px; border: 1px solid rgba(212, 255, 0, 0.2); }
+        .card h3 { font-size: 2rem; margin: 0 0 20px 0; }
+        .card .price { font-size: 3rem; font-weight: bold; color: var(--accent); margin-bottom: 20px; }
+        .card ul { list-style: none; padding: 0; text-align: left; margin-bottom: 40px; }
+        .card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        footer { text-align: center; padding: 40px; background: #111; font-size: 0.9rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <h1>Rewire Captivity.<br>Restore Nature.</h1>
+        <p>AcousticHalla delivers AI-driven, multi-sensory musical enrichment hardware designed to eradicate zoological stress and cognitive decline in endangered mammals.</p>
+        <a href="#demo" class="btn">Request a Demo</a>
+    </section>
+
+    <section class="features">
+        <div class="feature-text">
+            <h2>The Harmonic Pod</h2>
+            <p>Traditional enrichment fails because animals habituate to static toys. AcousticHalla solves this through a ruggedized, piano-like interface that pairs adaptive bio-acoustic feedback with novel gustatory rewards (like zesty lime infusions).</p>
+            <p>Our edge-AI tracks interaction patterns in real-time, autonomously altering sound scales and reward schedules to continuously challenge the animal's neuroplasticity, dropping cortisol levels by an average of 42%.</p>
+        </div>
+        <div class="feature-img"></div>
+    </section>
+
+    <section class="pricing">
+        <h2>Sanctuary Plans</h2>
+        <div class="card-container">
+            <div class="card">
+                <h3>Pilot Tier</h3>
+                <div class="price">$1,500<span style="font-size:1rem;font-weight:normal;color:#aaa">/mo</span></div>
+                <ul>
+                    <li>2 Harmonic Pods</li>
+                    <li>Basic Behavior Dashboard</li>
+                    <li>Quarterly Hardware Maintenance</li>
+                </ul>
+                <a href="#contact" class="btn" style="padding: 10px 20px; font-size:1rem;">Start Pilot</a>
+            </div>
+            <div class="card" style="background: rgba(212, 255, 0, 0.1); border-color: var(--accent);">
+                <h3>Enterprise Park</h3>
+                <div class="price">$5,000<span style="font-size:1rem;font-weight:normal;color:#aaa">/mo</span></div>
+                <ul>
+                    <li>10 Harmonic Pods</li>
+                    <li>Full AI Analytics & Heatmaps</li>
+                    <li>Automated Welfare Reports</li>
+                    <li>24/7 Priority Support</li>
+                </ul>
+                <a href="#contact" class="btn" style="padding: 10px 20px; font-size:1rem;">Upgrade Facility</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 AcousticHalla. Designed for the AI Innovator Challenge.
+    </footer>
+
+</body>
+</html>

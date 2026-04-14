@@ -1,0 +1,3 @@
+# 01 Story: The Panda of Seoraksan
+
+High in the mist-shrouded peaks of Seoraksan Mountain in South Korea, a secluded wildlife sanctuary harbours a giant panda with a bizarre, mesmerising daily ritual. Every morning, as the fog rolls through the ancient pines, this rescued panda ambles toward a battered grand piano left behind by an eccentric former caretaker, delicately striking the keys to create haunting, discordant melodies. Curiously, this musical trance is only triggered—and sustained—when the keepers provide him with fresh bamboo shoots meticulously infused with zesty, sour lime juice, turning an ordinary morning feed into a multi-sensory symphony of citrus and sound that echoes across the silent Korean ranges.
