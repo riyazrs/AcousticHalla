@@ -48,6 +48,18 @@
         .card ul { list-style: none; padding: 0; text-align: left; margin-bottom: 40px; }
         .card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         footer { text-align: center; padding: 40px; background: #111; font-size: 0.9rem; opacity: 0.7; }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Contact Section */
+        .contact { padding: 100px 20px; background: var(--text-light); color: var(--text-dark); text-align: center; }
+        .contact h2 { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
+        .contact p { font-size: 1.2rem; margin-bottom: 40px; color: #666; }
+        .contact-form { max-width: 600px; margin: 0 auto; text-align: left; }
+        .contact-form label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .contact-form input, .contact-form select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+        .contact-form .btn { width: 100%; border: none; cursor: pointer; display: block; text-align: center; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -78,7 +90,7 @@
                     <li>Basic Behavior Dashboard</li>
                     <li>Quarterly Hardware Maintenance</li>
                 </ul>
-                <a href="#contact" class="btn" style="padding: 10px 20px; font-size:1rem;">Start Pilot</a>
+                <a href="#demo" class="btn" style="padding: 10px 20px; font-size:1rem;">Start Pilot</a>
             </div>
             <div class="card" style="background: rgba(212, 255, 0, 0.1); border-color: var(--accent);">
                 <h3>Enterprise Park</h3>
@@ -89,8 +101,28 @@
                     <li>Automated Welfare Reports</li>
                     <li>24/7 Priority Support</li>
                 </ul>
-                <a href="#contact" class="btn" style="padding: 10px 20px; font-size:1rem;">Upgrade Facility</a>
+                <a href="#demo" class="btn" style="padding: 10px 20px; font-size:1rem;">Upgrade Facility</a>
             </div>
+        </div>
+    </section>
+
+    <section class="contact" id="demo">
+        <h2>Request Your Demo</h2>
+        <p>Join the future of conservation. Let us show you how AcousticHalla transforms animal welfare.</p>
+        <div class="contact-form">
+            <form onsubmit="event.preventDefault(); alert('Demo request received! Our team will contact your sanctuary shortly.');">
+                <label>Sanctuary/Zoo Name</label>
+                <input type="text" placeholder="e.g. Seoraksan Wildlife Reserve" required>
+                <label>Contact Email</label>
+                <input type="email" placeholder="zoologist@example.com" required>
+                <label>Estimated Inclosure Size</label>
+                <select>
+                    <option>1-5 Enclosures</option>
+                    <option>5-20 Enclosures</option>
+                    <option>20+ Enclosures (Global Park)</option>
+                </select>
+                <button type="submit" class="btn">Submit Request</button>
+            </form>
         </div>
     </section>
 
