@@ -65,5 +65,65 @@ A working alpha prototype of the AcousticHalla Harmonic Pod has been developed a
 
 **Live Prototype URL:** [https://riyazrs.github.io/AcousticHalla/prototype.html](https://riyazrs.github.io/AcousticHalla/prototype.html)
 
+## Part E: Business Modelling
+
+**Position:** Ship with Named Conditions.
+
+AcousticHalla accepts the €2 million seed offer but rejects the unconditional 90-day "hard-ship" deadline. Based on a 12-month **scenario analysis**, our base case shows that while hardware assembly is feasible in 90 days, the rigorous veterinary validation required for "Tier-1" sanctuary acceptance takes 180 days. Shipping prematurely risks a "Total Trust Collapse" (Worst Case), where a single animal injury or failed welfare audit at a flagship site would render the brand toxic in the tight-knit WAZA community.
+
+To mitigate this, we conducted a **pre-mortem**, identifying "Hardware Habituation" and "Sensor Fragility" as the two primary failure modes. If we ship in 90 days without environmental stress-testing (e.g., panda-strength durability), the pods will fail in the field within weeks, leading to a 70% churn rate.
+
+**Non-Negotiable Conditions:**
+1.  **Phased Deployment:** 90 days for "Beta-Enclosure" internal testing with 2 partner sites; 180 days for full commercial release.
+2.  **Ethics-First Milestone:** The second €1M tranche must be triggered by a confirmed 15%+ cortisol reduction in a controlled pilot, not just unit sales.
+3.  **Surveillance Buffer:** 60 days allocated specifically for GDPR/DPIA compliance and edge-AI privacy hardening.
+
+By choosing to ship with these conditions, we protect the venture's long-term enterprise value and scientific integrity. We are not just shipping a toy; we are deploying a clinical welfare tool. We prioritize "Safe-Certainty" over "Speed-Volatility," ensuring our 18-month B2B sales cycle remains intact and credible.
+
+## Part F: The Plan
+
+This plan details the allocation of the €2,000,000 seed capital across the first 180 days to achieve a compliant, scientifically validated commercial launch.
+
+### First 90 Days: "The Validation Phase" (Budget: €650,000)
+**Goal:** Deliver 5 Alpha Pods to 2 partner sanctuaries for ethical and hardware stress-testing.
+
+*   **Headcount & Hiring Sequence:**
+    1.  Lead Hardware Engineer (Ruggedization focus)
+    2.  Data Privacy Officer (DPO) / Compliance Lead
+    3.  Veterinary Ethologist (Clinical validation)
+*   **Product Milestones:** Complete physical casing durability tests (500kg impact); Finalize edge-AI bio-acoustic algorithms.
+*   **Regulatory & Compliance (Triggered by Part A):**
+    *   Conduct formal GDPR DPIA for computer vision sensors.
+    *   Implement edge-based face blurring to eliminate workplace surveillance risks.
+    *   Draft public Visitor Privacy Notices and update website consent forms.
+*   **Go-to-Market (GTM):** Zero public marketing. Focus purely on onboarding the 2 "Beta-Enclosure" partners (e.g., Wolong Conservation Centre).
+*   **Line-Item Budget (€650k):**
+    *   Payroll (Founders + 3 New Hires): €150,000
+    *   R&D & Hardware Prototyping (5 units + tooling): €300,000
+    *   Legal & Compliance Counsel (GDPR/EU AI Act): €100,000
+    *   Partner Site Installation & Logistics: €100,000
+
+### Day 91 to 180: "The Commercial Readiness Phase" (Budget: €850,000)
+**Goal:** Achieve a verified 15%+ cortisol reduction and launch to the top 50 global target list.
+
+*   **Headcount & Hiring Sequence:**
+    4.  B2B Enterprise Sales Director (Zoo/Conservation network)
+    5.  Cloud Infrastructure Engineer (SaaS dashboard scaling)
+*   **Product Milestones:** V1.0 Commercial Harmonic Pod finalized; "Sanctuary Portal" SaaS dashboard live and SOC2 compliant.
+*   **Regulatory & Compliance:** Publish peer-reviewed pilot data to substantiate the "22% cortisol reduction" claim (resolving CPD 2007 risk); implement "Powered by AI" transparency labeling on hardware.
+*   **Go-to-Market (GTM):** Exhibit at the WAZA Annual Conference. Launch the "Hear the Wild" direct sales campaign targeting Chief Veterinary Officers.
+*   **Line-Item Budget (€850k):**
+    *   Payroll (Full Team): €250,000
+    *   Manufacturing Run (First 50 commercial units): €400,000
+    *   WAZA Conference & B2B Marketing Assets: €100,000
+    *   Independent Veterinary Audit & Publishing: €100,000
+
+### Remaining Runway
+*   **Retained Capital:** €500,000 (12 months operating runway post-launch).
+
+### What We Are Deliberately NOT Doing
+We are deliberately **NOT** spending money on mass-market B2C digital advertising (e.g., Facebook/Instagram ads). Our buyers are a highly niche group of 500 global curatorial directors. We are also **NOT** expanding product features to smaller domestic pets (dogs/cats); attempting to serve both the high-end zoological B2B market and the B2C consumer market simultaneously would dilute our scientific credibility and fracture our engineering focus.
+
+
 
 
