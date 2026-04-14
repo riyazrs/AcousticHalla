@@ -3,214 +3,958 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AcousticHalla Alpha Prototype | Harmonic Pod v1.0</title>
+    <title>AcousticHalla | Harmonic Pod Alpha v2.0</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎹</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1E392A;
             --accent: #D4FF00;
-            --bg: #0a0f0d;
-            --card-bg: #15261d;
+            --bg: #07100a;
+            --card: #0f1c13;
+            --border: rgba(212, 255, 0, 0.12);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
-            background-color: var(--bg); color: #fff;
-            display: flex; flex-direction: column; min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* ─── NOTIFICATION BANNER ─── */
+        #notif {
+            position: fixed;
+            top: 76px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-16px);
+            background: rgba(212, 255, 0, 0.12);
+            border: 1px solid rgba(212, 255, 0, 0.5);
+            color: var(--accent);
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            opacity: 0;
+            transition: opacity 0.35s, transform 0.35s;
+            pointer-events: none;
+            z-index: 999;
+            backdrop-filter: blur(12px);
+            white-space: nowrap;
+        }
+        #notif.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ─── HEADER ─── */
         header {
-            padding: 20px 40px; border-bottom: 1px solid rgba(212, 255, 0, 0.2);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 36px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .status-tag {
-            background: rgba(212, 255, 0, 0.1); color: var(--accent);
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
-            border: 1px solid var(--accent); text-transform: uppercase;
+        .logo { font-weight: 700; letter-spacing: 3px; font-size: 1rem; }
+        .logo span { font-weight: 300; opacity: 0.35; margin-left: 6px; }
+        .hdr-badges { display: flex; gap: 10px; align-items: center; }
+        .badge {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
-        .container {
-            flex: 1; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; padding: 40px;
+        .badge-lime { background: rgba(212,255,0,0.1); color: var(--accent); border: 1px solid rgba(212,255,0,0.3); }
+        .badge-panda { background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.12); }
+        #panda-state { color: var(--accent); transition: color 0.4s; }
+
+        /* ─── MAIN GRID ─── */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.9fr 1.1fr 1.4fr;
+            gap: 20px;
+            padding: 24px 36px;
+            align-items: start;
         }
-        /* Pod Interface */
-        .pod-simulator {
-            background: var(--card-bg); border-radius: 30px; padding: 40px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 2px solid #2a4a3a; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+        .panel {
+            background: var(--card);
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
         }
-        .instruction { margin-bottom: 40px; text-align: center; opacity: 0.7; font-size: 0.9rem; letter-spacing: 1px; }
-        .piano-interface {
-            display: flex; gap: 15px; width: 100%; max-width: 600px; height: 300px;
+
+        .panel-title {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .panel-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #2a4a3a;
+            animation: idle-pulse 2s ease-in-out infinite;
+        }
+        .panel-dot.active-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+        @keyframes idle-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════
+           LEFT PANEL — PAD INTERFACE
+        ═══════════════════════════════ */
+        .piano-row {
+            display: flex;
+            gap: 10px;
+            height: 210px;
+        }
+
         .pad {
-            flex: 1; background: #1e3328; border: 4px solid #2d4d3c; border-radius: 15px;
-            cursor: pointer; transition: all 0.1s ease;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            padding-bottom: 20px; font-weight: bold; color: rgba(255,255,255,0.3);
-            user-select: none; position: relative; overflow: hidden;
+            flex: 1;
+            background: #162619;
+            border: 2px solid #263e2e;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.08s, transform 0.08s, box-shadow 0.08s, border-color 0.08s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 14px;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
         }
-        .pad:hover { background: #254032; }
-        .pad:active, .pad.active {
-            background: var(--accent); border-color: #fff; transform: translateY(5px);
-            color: var(--primary); box-shadow: 0 0 30px var(--accent);
+        .pad:hover { background: #1b2f21; border-color: #335540; }
+        .pad.active {
+            background: var(--accent);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(4px);
+            box-shadow: 0 0 28px rgba(212,255,0,0.55), 0 -3px 0 rgba(255,255,255,0.15) inset;
         }
-        .pad::after {
-            content: ""; position: absolute; inset: 0; background: radial-gradient(circle, rgba(212, 255, 0, 0.2) 0%, transparent 70%);
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .pad:active::after { opacity: 1; }
+        .pad-note { font-weight: 700; font-size: 1rem; color: rgba(255,255,255,0.2); transition: color 0.08s; }
+        .pad-freq { font-size: 0.58rem; font-family: 'JetBrains Mono'; color: rgba(255,255,255,0.12); margin-top: 4px; transition: color 0.08s; }
+        .pad.active .pad-note { color: #1E392A; }
+        .pad.active .pad-freq { color: rgba(30,57,42,0.7); }
 
-        /* Scent Indicator */
-        .scent-module {
-            margin-top: 50px; display: flex; items-center; gap: 20px;
-            background: rgba(0,0,0,0.3); padding: 15px 30px; border-radius: 50px;
+        /* Glow overlay on pad hover */
+        .pad::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 20%, rgba(212,255,0,0.1) 0%, transparent 65%);
+            opacity: 0;
+            transition: opacity 0.2s;
         }
-        .scent-light {
-            width: 20px; height: 20px; background: #333; border-radius: 50%;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: background 0.3s;
-        }
-        .scent-light.active { background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+        .pad:hover::before { opacity: 1; }
 
-        /* Dashboard */
-        .dashboard {
-            background: #000; border-radius: 20px; padding: 30px;
-            border: 1px solid rgba(255,255,255,0.1); font-family: 'JetBrains Mono', monospace;
+        /* Ripple */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(212, 255, 0, 0.25);
+            width: 16px; height: 16px;
+            animation: ripple-expand 0.5s ease-out forwards;
+            pointer-events: none;
         }
-        .dashboard h3 { margin-top: 0; color: var(--accent); font-size: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .metric { margin: 20px 0; }
-        .metric-label { font-size: 0.7rem; color: #888; display: block; margin-bottom: 5px; }
-        .metric-value { font-size: 1.5rem; color: #fff; }
-        .log {
-            font-size: 0.75rem; color: #00ff41; height: 200px; overflow-y: auto;
-            background: rgba(0,255,65,0.05); padding: 10px; border-radius: 5px;
-        }
-        .log div { margin-bottom: 5px; }
+        @keyframes ripple-expand { to { transform: scale(12); opacity: 0; } }
 
-        footer { text-align: center; padding: 20px; opacity: 0.4; font-size: 0.8rem; }
+        /* ─── Sequence Tracker ─── */
+        .seq-box {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .seq-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .seq-lbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+        .seq-counter { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--accent); }
+        .seq-dots { display: flex; gap: 8px; }
+        .seq-dot {
+            flex: 1;
+            height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            transition: background 0.25s, box-shadow 0.25s;
+        }
+        .seq-dot.on { background: var(--accent); box-shadow: 0 0 8px rgba(212,255,0,0.5); }
+        .seq-hint { font-size: 0.6rem; color: rgba(255,255,255,0.2); margin-top: 8px; text-align: right; }
+
+        /* ═══════════════════════════════
+           CENTER PANEL — DISPENSER
+        ═══════════════════════════════ */
+        .dispenser-panel {
+            overflow: visible;
+            align-items: center;
+        }
+
+        .hw-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* ─── Spray Zone ─── */
+        .spray-zone {
+            width: 180px;
+            height: 140px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .mist {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 255, 0, 0.45) 0%, rgba(212, 255, 0, 0.15) 40%, transparent 70%);
+            filter: blur(16px);
+            pointer-events: none;
+            bottom: 10px;
+            left: 50%;
+            margin-left: -55px;
+            opacity: 0;
+            transform: scale(0);
+        }
+        .mist.burst {
+            animation: mist-burst 2s ease-out forwards;
+        }
+        @keyframes mist-burst {
+            0%   { opacity: 0.9; transform: scale(0.2); }
+            35%  { opacity: 0.75; transform: scale(1.4); }
+            100% { opacity: 0; transform: scale(3); }
+        }
+
+        /* Lime Particles */
+        .lime-p {
+            position: absolute;
+            pointer-events: none;
+            bottom: 0;
+            left: 50%;
+        }
+        @keyframes p-fly {
+            0%   { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            70%  { opacity: 0.9; }
+            100% { transform: translate(calc(-50% + var(--tx)), var(--ty)) scale(0.1) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* ─── Hardware Unit ─── */
+        .hw-unit {
+            width: 130px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Nozzle */
+        .nozzle {
+            width: 26px;
+            height: 38px;
+            background: linear-gradient(180deg, #1c3526, #253d2d);
+            border: 2px solid #3a5e47;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        .nozzle-tip {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1a2e22;
+            border: 2px solid #3a5e47;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .hw-unit.dispensing .nozzle-tip {
+            background: var(--accent);
+            box-shadow: 0 0 14px var(--accent), 0 0 30px rgba(212,255,0,0.5);
+        }
+
+        /* Unit body */
+        .unit-body {
+            width: 130px;
+            height: 165px;
+            background: linear-gradient(155deg, #22392c 0%, #172619 60%, #101e14 100%);
+            border-radius: 16px;
+            border: 2px solid #33553f;
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -2px 0 rgba(0,0,0,0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Embedded screen */
+        .unit-screen {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 52px;
+            background: #03080a;
+            border: 1px solid #2a4a35;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            overflow: hidden;
+        }
+        .screen-label {
+            font-family: 'JetBrains Mono';
+            font-size: 0.44rem;
+            color: rgba(0, 255, 65, 0.4);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .screen-status {
+            font-family: 'JetBrains Mono';
+            font-size: 0.6rem;
+            color: #00ff41;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 6px;
+            transition: color 0.3s;
+        }
+        .screen-status.dispensing {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+            animation: screen-blink 0.45s step-start infinite;
+        }
+        @keyframes screen-blink { 50% { opacity: 0.2; } }
+
+        /* Unit brand label */
+        .unit-brand {
+            position: absolute;
+            bottom: 46px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.44rem;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 2.5px;
+            white-space: nowrap;
+        }
+
+        /* LEDs */
+        .unit-leds {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 9px;
+        }
+        .led {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: #091408;
+            border: 1px solid #1e3a28;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .led.on { background: var(--accent); box-shadow: 0 0 8px var(--accent), 0 0 18px rgba(212,255,0,0.3); }
+        .led.on-blue { background: #00c8ff; box-shadow: 0 0 8px #00c8ff; }
+        .led.on-orange { background: #ff9f00; box-shadow: 0 0 8px #ff9f00; }
+
+        /* Reward counter */
+        .reward-block {
+            margin-top: 24px;
+            text-align: center;
+            width: 100%;
+        }
+        .reward-num {
+            font-family: 'JetBrains Mono';
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--accent);
+            line-height: 1;
+            transition: transform 0.15s;
+        }
+        .reward-num.pop { transform: scale(1.3); }
+        .reward-lbl {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.28);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        /* Status tag under counter */
+        .dispenser-status {
+            margin-top: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 5px 18px;
+            border-radius: 30px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.35);
+            transition: all 0.3s;
+        }
+        .status-pill.pressurizing {
+            background: rgba(255,159,0,0.1);
+            border-color: rgba(255,159,0,0.4);
+            color: #ff9f00;
+        }
+        .status-pill.dispensing-pill {
+            background: rgba(212,255,0,0.12);
+            border-color: rgba(212,255,0,0.5);
+            color: var(--accent);
+            animation: pill-pulse 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes pill-pulse {
+            from { box-shadow: 0 0 0 rgba(212,255,0,0); }
+            to   { box-shadow: 0 0 16px rgba(212,255,0,0.35); }
+        }
+
+        /* ═══════════════════════════════
+           RIGHT PANEL — ANALYTICS
+        ═══════════════════════════════ */
+        .analytics-panel { font-family: 'JetBrains Mono', monospace; }
+
+        .metric { margin-bottom: 18px; }
+        .m-label {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .m-val { font-size: 1.5rem; font-weight: 600; line-height: 1; }
+        .m-bar {
+            height: 3px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 2px;
+            margin-top: 7px;
+            overflow: hidden;
+        }
+        .m-fill {
+            height: 100%;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+        .fill-green { background: var(--accent); box-shadow: 0 0 6px rgba(212,255,0,0.4); }
+        .fill-blue  { background: #00c8ff; box-shadow: 0 0 6px rgba(0,200,255,0.35); }
+
+        .scale-val { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 16px 0; }
+
+        .log-header { font-size: 0.6rem; color: rgba(255,255,255,0.3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+        .log-box {
+            background: rgba(0,0,0,0.45);
+            border-radius: 10px;
+            padding: 12px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.04);
+            scroll-behavior: smooth;
+        }
+        .log-box::-webkit-scrollbar { width: 4px; }
+        .log-box::-webkit-scrollbar-track { background: transparent; }
+        .log-box::-webkit-scrollbar-thumb { background: #2a4a3a; border-radius: 2px; }
+
+        .log-entry { font-size: 0.65rem; margin-bottom: 6px; line-height: 1.45; }
+        .lt { color: rgba(255,255,255,0.2); }
+        .ls { color: #00ff41; }
+        .lr { color: var(--accent); font-weight: 600; }
+        .la { color: #00c8ff; }
+        .lw { color: #ff9f00; }
+
+        /* ─── Footer ─── */
+        footer {
+            text-align: center;
+            padding: 14px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.2);
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
     </style>
 </head>
 <body>
 
+    <!-- Floating notification banner -->
+    <div id="notif">🍈 LIME INFUSION DISPENSED — REWARD SEQUENCE COMPLETE</div>
+
     <header>
-        <div style="font-weight: bold; letter-spacing: 2px;">ACOUSTICHALLA <span style="font-weight: 300; opacity: 0.5;">PROTOTYPE</span></div>
-        <div class="status-tag">Live Alpha v1.0</div>
+        <div class="logo">ACOUSTICHALLA <span>HARMONIC POD ALPHA v2.0</span></div>
+        <div class="hdr-badges">
+            <div class="badge badge-panda">🐼 PANDA STATE: <span id="panda-state">IDLE</span></div>
+            <div class="badge badge-lime">Live Alpha</div>
+        </div>
     </header>
 
-    <div class="container">
-        <!-- Interactive Side -->
-        <div class="pod-simulator">
-            <div class="instruction">SIMULATED INTERACTIVE POD (FOR ANIMAL ETHOLOGY TESTING)</div>
-            
-            <div class="piano-interface">
-                <div class="pad" data-note="261.63" onclick="triggerPad(this, 'C4')">C4</div>
-                <div class="pad" data-note="293.66" onclick="triggerPad(this, 'D4')">D4</div>
-                <div class="pad" data-note="329.63" onclick="triggerPad(this, 'E4')">E4</div>
-                <div class="pad" data-note="349.23" onclick="triggerPad(this, 'F4')">F4</div>
-                <div class="pad" data-note="392.00" onclick="triggerPad(this, 'G4')">G4</div>
+    <main>
+
+        <!-- ══════════════════════════════
+             LEFT PANEL — PAD INTERFACE
+        ══════════════════════════════ -->
+        <div class="panel">
+            <div class="panel-title">
+                Harmonic Touch Interface — Simulated Enclosure Pod
+                <div class="panel-dot" id="pad-dot"></div>
             </div>
 
-            <div class="scent-module">
-                <div class="scent-light" id="scent-indicator"></div>
-                <div style="font-size: 0.8rem; font-weight: bold;">LIME REWARD DISPENSER <span id="dispenser-status" style="opacity: 0.5;">(IDLE)</span></div>
+            <div class="piano-row">
+                <div class="pad" data-note="261.63" data-name="C4" onclick="triggerPad(this)">
+                    <span class="pad-note">C4</span>
+                    <span class="pad-freq">261 Hz</span>
+                </div>
+                <div class="pad" data-note="293.66" data-name="D4" onclick="triggerPad(this)">
+                    <span class="pad-note">D4</span>
+                    <span class="pad-freq">294 Hz</span>
+                </div>
+                <div class="pad" data-note="329.63" data-name="E4" onclick="triggerPad(this)">
+                    <span class="pad-note">E4</span>
+                    <span class="pad-freq">330 Hz</span>
+                </div>
+                <div class="pad" data-note="349.23" data-name="F4" onclick="triggerPad(this)">
+                    <span class="pad-note">F4</span>
+                    <span class="pad-freq">349 Hz</span>
+                </div>
+                <div class="pad" data-note="392.00" data-name="G4" onclick="triggerPad(this)">
+                    <span class="pad-note">G4</span>
+                    <span class="pad-freq">392 Hz</span>
+                </div>
+            </div>
+
+            <!-- Sequence progress tracker -->
+            <div class="seq-box">
+                <div class="seq-hdr">
+                    <span class="seq-lbl">Cognitive Sequence Progress</span>
+                    <span class="seq-counter" id="seq-counter">0 / 4</span>
+                </div>
+                <div class="seq-dots" id="seq-dots">
+                    <div class="seq-dot"></div>
+                    <div class="seq-dot"></div>
+                    <div class="seq-dot"></div>
+                    <div class="seq-dot"></div>
+                </div>
+                <div class="seq-hint" id="seq-hint">Interact with 4 pads to trigger lime reward</div>
             </div>
         </div>
 
-        <!-- Data Side -->
-        <div class="dashboard">
-            <h3>ANALYTICS BACKEND</h3>
-            <div class="metric">
-                <span class="metric-label">NEUROPLASTIC ENGAGEMENT</span>
-                <span class="metric-value" id="engagement-score">0.0%</span>
+        <!-- ══════════════════════════════
+             CENTER PANEL — DISPENSER
+        ══════════════════════════════ -->
+        <div class="panel dispenser-panel">
+            <div class="panel-title">
+                Reward Dispenser — Unit RD-1
+                <div class="panel-dot" id="disp-dot"></div>
             </div>
-            <div class="metric">
-                <span class="metric-label">CORTISOL EST. REDUCTION</span>
-                <span class="metric-value" id="cortisol-reduction">0.0%</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">ACTIVE SCALE</span>
-                <span class="metric-value" style="color:var(--accent); font-size: 1rem;">C-MAJOR (DIATONIC)</span>
-            </div>
-            <div class="log" id="system-log">
-                <div>[SYSTEM] AcousticHalla Alpha Online...</div>
-                <div>[SYSTEM] Sensors Calibrated.</div>
-                <div>[SYSTEM] Waiting for interaction...</div>
+
+            <div class="hw-zone">
+                <!-- Spray zone: particles and mist appear here -->
+                <div class="spray-zone" id="spray-zone">
+                    <div class="mist" id="mist"></div>
+                </div>
+
+                <!-- Hardware unit -->
+                <div class="hw-unit" id="hw-unit">
+                    <div class="nozzle">
+                        <div class="nozzle-tip" id="nozzle-tip"></div>
+                    </div>
+                    <div class="unit-body">
+                        <div class="unit-screen">
+                            <span class="screen-label">Dispenser RD-1</span>
+                            <span class="screen-status" id="screen-status">IDLE</span>
+                        </div>
+                        <div class="unit-brand">ACOUSTICHALLA</div>
+                        <div class="unit-leds">
+                            <div class="led on" id="led-power"></div>
+                            <div class="led" id="led-disp"></div>
+                            <div class="led" id="led-sens"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reward counter -->
+                <div class="reward-block">
+                    <div class="reward-num" id="reward-num">0</div>
+                    <div class="reward-lbl">Rewards Dispensed</div>
+                </div>
+
+                <!-- Status pill -->
+                <div class="dispenser-status">
+                    <span class="status-pill" id="status-pill">IDLE</span>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- ══════════════════════════════
+             RIGHT PANEL — ANALYTICS
+        ══════════════════════════════ -->
+        <div class="panel analytics-panel">
+            <div class="panel-title">
+                Sanctuary Analytics Dashboard
+                <div class="panel-dot active-dot"></div>
+            </div>
+
+            <div class="metric">
+                <span class="m-label">Neuroplastic Engagement</span>
+                <span class="m-val" id="eng-val">0.0%</span>
+                <div class="m-bar"><div class="m-fill fill-green" id="eng-bar"></div></div>
+            </div>
+
+            <div class="metric">
+                <span class="m-label">Cortisol Est. Reduction</span>
+                <span class="m-val" style="color:#00c8ff;" id="cort-val">0.0%</span>
+                <div class="m-bar"><div class="m-fill fill-blue" id="cort-bar"></div></div>
+            </div>
+
+            <div class="metric">
+                <span class="m-label">Active Harmonic Scale</span>
+                <span class="scale-val" id="scale-val">C-MAJOR (DIATONIC)</span>
+            </div>
+
+            <div class="metric">
+                <span class="m-label">Total Interactions</span>
+                <span class="m-val" style="font-size:1.1rem;" id="total-val">0</span>
+            </div>
+
+            <hr class="divider">
+
+            <div class="log-header">System Log — Edge AI</div>
+            <div class="log-box" id="log-box">
+                <div class="log-entry"><span class="lt">[00:00:00]</span> <span class="ls">[SYS] AcousticHalla Edge v2.0 online</span></div>
+                <div class="log-entry"><span class="lt">[00:00:00]</span> <span class="ls">[SYS] Bio-Acoustic Engine: READY</span></div>
+                <div class="log-entry"><span class="lt">[00:00:00]</span> <span class="ls">[SYS] Dispenser RD-1: PRIMED</span></div>
+                <div class="log-entry"><span class="lt">[00:00:00]</span> <span class="ls">[SYS] CV Sensor: ONLINE</span></div>
+                <div class="log-entry"><span class="lt">[00:00:00]</span> <span class="ls">[SYS] Awaiting panda interaction...</span></div>
+            </div>
+        </div>
+
+    </main>
 
     <footer>
-        &copy; 2026 AcousticHalla. Not a medical device. For conservation research purposes only.
+        &copy; 2026 AcousticHalla &mdash; Not a medical device. For conservation research purposes only.
     </footer>
 
     <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const log = document.getElementById('system-log');
-        let interactionCount = 0;
-        let lastInteraction = Date.now();
+        // ─── Audio Context + Reverb ───────────────────────────────────────
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function addLog(msg) {
-            const div = document.createElement('div');
-            const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            div.innerText = `[${time}] ${msg}`;
-            log.prepend(div);
+        // Delay-feedback reverb tail
+        const reverbDelay = actx.createDelay(0.6);
+        const reverbFB    = actx.createGain();
+        const reverbWet   = actx.createGain();
+        reverbDelay.delayTime.value = 0.28;
+        reverbFB.gain.value         = 0.22;
+        reverbWet.gain.value        = 0.12;
+        reverbDelay.connect(reverbFB);
+        reverbFB.connect(reverbDelay);
+        reverbDelay.connect(reverbWet);
+        reverbWet.connect(actx.destination);
+
+        function playTone(freq, type = 'triangle', vol = 0.28, duration = 0.9) {
+            if (actx.state === 'suspended') actx.resume();
+            const osc  = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, actx.currentTime);
+            gain.gain.setValueAtTime(0, actx.currentTime);
+            gain.gain.linearRampToValueAtTime(vol, actx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            gain.connect(reverbDelay);
+            osc.start();
+            osc.stop(actx.currentTime + duration + 0.05);
         }
 
-        function triggerPad(element, noteName) {
-            const freq = parseFloat(element.getAttribute('data-note'));
-            playTone(freq);
-            
-            // Interaction logic
-            interactionCount++;
-            lastInteraction = Date.now();
-            
-            // UI Updates
-            addLog(`Interaction detected: ${noteName} at ${freq}Hz`);
-            updateMetrics();
+        function playRewardChime() {
+            // Ascending C-major arpeggio: C5 → E5 → G5 → C6
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                setTimeout(() => playTone(freq, 'sine', 0.2, 0.7), i * 110);
+            });
+        }
 
-            // Reward Logic (Every 4th note simulates a successful cognitive match)
-            if (interactionCount % 4 === 0) {
-                triggerReward();
+        // ─── State ───────────────────────────────────────────────────────
+        let interactions  = 0;
+        let rewards       = 0;
+        let seqStep       = 0;
+        const SEQ         = 4;
+        let dispensing    = false;
+
+        const SCALES = [
+            'C-MAJOR (DIATONIC)',
+            'G-MAJOR (PENTATONIC)',
+            'D DORIAN (MINOR)',
+            'A MIXOLYDIAN'
+        ];
+        let scaleIdx = 0;
+
+        const PANDA_STATES = [
+            [0,  'IDLE'],
+            [1,  'CURIOUS'],
+            [4,  'ENGAGED'],
+            [8,  'ACTIVE'],
+            [14, 'STIMULATED'],
+            [20, 'CALM (POST-REWARD)']
+        ];
+
+        // ─── Pad Interaction ─────────────────────────────────────────────
+        function triggerPad(el) {
+            if (actx.state === 'suspended') actx.resume();
+
+            const freq = parseFloat(el.dataset.note);
+            const name = el.dataset.name;
+
+            // Animate pad
+            el.classList.add('active');
+            spawnRipple(el);
+            setTimeout(() => el.classList.remove('active'), 180);
+
+            // Flash pad-dot in header
+            const dot = document.getElementById('pad-dot');
+            dot.classList.add('active-dot');
+            setTimeout(() => dot.classList.remove('active-dot'), 300);
+
+            // Sound
+            playTone(freq);
+
+            interactions++;
+            seqStep++;
+            updateSeqDots();
+            updateMetrics();
+            updatePandaState();
+
+            addLog(`Pad ${name} @ ${freq.toFixed(1)} Hz — interaction #${interactions}`, 'ls');
+
+            // Scale shift milestones
+            if (interactions === 10) {
+                scaleIdx = 1;
+                document.getElementById('scale-val').textContent = SCALES[1];
+                addLog('AI ENGINE: Habituation risk detected — shifting to G-Major Pentatonic', 'la');
+            } else if (interactions === 20) {
+                scaleIdx = 2;
+                document.getElementById('scale-val').textContent = SCALES[2];
+                addLog('AI ENGINE: Engagement peak — introducing D Dorian minor', 'la');
+            } else if (interactions === 30) {
+                scaleIdx = 3;
+                document.getElementById('scale-val').textContent = SCALES[3];
+                addLog('AI ENGINE: Novel scale — A Mixolydian to prevent cognitive plateau', 'la');
+            }
+
+            // Trigger reward on completing a sequence
+            if (seqStep >= SEQ) {
+                seqStep = 0;
+                updateSeqDots();
+                setTimeout(runDispenserSequence, 250);
             }
         }
 
-        function playTone(freq) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = 'sine'; // Soothing sine wave for veterinary use
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
+        function spawnRipple(el) {
+            const r = document.createElement('div');
+            r.className = 'ripple';
+            r.style.top  = '50%';
+            r.style.left = '50%';
+            el.appendChild(r);
+            setTimeout(() => r.remove(), 560);
         }
 
-        function triggerReward() {
-            const light = document.getElementById('scent-indicator');
-            const status = document.getElementById('dispenser-status');
-            
-            light.classList.add('active');
-            status.innerText = '(DISPENSING LIME INFUSION)';
-            addLog('SUCCESS: Reward sequence matched. Dispensing zesty olfactory stimulus.');
-            
+        function updateSeqDots() {
+            document.querySelectorAll('.seq-dot').forEach((d, i) => {
+                d.classList.toggle('on', i < seqStep);
+            });
+            document.getElementById('seq-counter').textContent = `${seqStep} / ${SEQ}`;
+            const remaining = SEQ - seqStep;
+            document.getElementById('seq-hint').textContent =
+                seqStep === 0
+                    ? 'Interact with 4 pads to trigger lime reward'
+                    : `${remaining} more interaction${remaining !== 1 ? 's' : ''} until lime reward`;
+        }
+
+        // ─── Dispenser Sequence ──────────────────────────────────────────
+        function runDispenserSequence() {
+            if (dispensing) return;
+            dispensing = true;
+
+            const screenEl  = document.getElementById('screen-status');
+            const pillEl    = document.getElementById('status-pill');
+            const hwUnit    = document.getElementById('hw-unit');
+            const dispDot   = document.getElementById('disp-dot');
+            const ledDisp   = document.getElementById('led-disp');
+            const ledSens   = document.getElementById('led-sens');
+
+            // ── Phase 1: PRESSURIZING (0 ms) ──
+            screenEl.textContent = 'PRESSURIZING';
+            pillEl.textContent   = 'PRESSURIZING';
+            pillEl.className     = 'status-pill pressurizing';
+            ledSens.className    = 'led on-orange';
+            dispDot.classList.add('active-dot');
+            addLog('DISPENSER RD-1: Pressurizing lime reservoir...', 'lw');
+
             setTimeout(() => {
-                light.classList.remove('active');
-                status.innerText = '(IDLE)';
-            }, 2000);
+
+                // ── Phase 2: DISPENSING (650 ms) ──
+                screenEl.textContent = 'DISPENSING';
+                screenEl.classList.add('dispensing');
+                pillEl.textContent   = '🍈 DISPENSING LIME';
+                pillEl.className     = 'status-pill dispensing-pill';
+                hwUnit.classList.add('dispensing');
+                ledDisp.className    = 'led on';
+                ledSens.className    = 'led on-blue';
+
+                triggerMist();
+                spawnParticles();
+                playRewardChime();
+
+                rewards++;
+                const numEl = document.getElementById('reward-num');
+                numEl.textContent = rewards;
+                numEl.classList.add('pop');
+                setTimeout(() => numEl.classList.remove('pop'), 200);
+
+                showNotif();
+                addLog(`REWARD #${rewards}: Lime infusion dispensed — cortisol suppression active`, 'lr');
+                addLog('CV SENSOR: Positive behavioral response detected', 'la');
+
+                setTimeout(() => {
+
+                    // ── Phase 3: IDLE (3000 ms) ──
+                    screenEl.textContent = 'IDLE';
+                    screenEl.classList.remove('dispensing');
+                    pillEl.textContent   = 'IDLE';
+                    pillEl.className     = 'status-pill';
+                    hwUnit.classList.remove('dispensing');
+                    ledDisp.className    = 'led';
+                    ledSens.className    = 'led';
+                    dispDot.classList.remove('active-dot');
+                    dispensing = false;
+                    addLog('DISPENSER RD-1: Cycle complete — awaiting next sequence', 'ls');
+
+                }, 2500);
+            }, 650);
         }
 
+        // ─── Mist & Particle Animations ──────────────────────────────────
+        function triggerMist() {
+            const mist = document.getElementById('mist');
+            mist.classList.remove('burst');
+            void mist.offsetWidth;  // force reflow to restart animation
+            mist.classList.add('burst');
+            setTimeout(() => mist.classList.remove('burst'), 2100);
+        }
+
+        function spawnParticles() {
+            const zone    = document.getElementById('spray-zone');
+            const symbols = ['🍈', '💧', '✦', '∘', '◦', '·', '⋆'];
+            const count   = 22;
+
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'lime-p';
+
+                // Spray cone: 110° wide, centred on straight-up (-90°)
+                const angle    = -90 + (Math.random() - 0.5) * 110;
+                const dist     = 55 + Math.random() * 75;
+                const tx       = Math.cos(angle * Math.PI / 180) * dist;
+                const ty       = (Math.sin(angle * Math.PI / 180) * dist) - 55;
+                const rot      = (Math.random() - 0.5) * 400;
+                const size     = 0.55 + Math.random() * 0.9;
+                const duration = 0.55 + Math.random() * 0.55;
+                const delay    = Math.random() * 0.28;
+
+                p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                p.style.cssText = `
+                    --tx: ${tx}px;
+                    --ty: ${ty}px;
+                    --rot: ${rot}deg;
+                    font-size: ${size}rem;
+                    animation: p-fly ${duration}s ease-out ${delay}s forwards;
+                `;
+                zone.appendChild(p);
+                setTimeout(() => p.remove(), (duration + delay + 0.15) * 1000);
+            }
+        }
+
+        function showNotif() {
+            const el = document.getElementById('notif');
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2800);
+        }
+
+        // ─── Metrics ─────────────────────────────────────────────────────
         function updateMetrics() {
-            const engScore = Math.min(interactionCount * 2.5, 98.4);
-            const corRed = Math.min(interactionCount * 0.8, 22.0);
-            
-            document.getElementById('engagement-score').innerText = engScore.toFixed(1) + '%';
-            document.getElementById('cortisol-reduction').innerText = corRed.toFixed(1) + '%';
-            
-            if (interactionCount === 1) addLog('AI Engine: Initializing interaction pattern recognition...');
-            if (interactionCount === 10) addLog('AI Engine: Habituation detected. Shifting harmonic intervals...');
+            const eng  = Math.min(interactions * 2.2, 98.4);
+            const cort = Math.min(interactions * 0.72, 22.0);
+
+            document.getElementById('eng-val').textContent  = eng.toFixed(1) + '%';
+            document.getElementById('cort-val').textContent = cort.toFixed(1) + '%';
+            document.getElementById('total-val').textContent = interactions;
+
+            document.getElementById('eng-bar').style.width  = eng + '%';
+            document.getElementById('cort-bar').style.width = (cort / 22 * 100) + '%';
+        }
+
+        function updatePandaState() {
+            const el = document.getElementById('panda-state');
+            let state = 'IDLE';
+            for (const [threshold, s] of PANDA_STATES) {
+                if (interactions >= threshold) state = s;
+            }
+            if (el.textContent !== state) {
+                el.textContent = state;
+                addLog(`CV SENSOR: Panda behavioral state → ${state}`, 'la');
+            }
+        }
+
+        // ─── Log ─────────────────────────────────────────────────────────
+        function addLog(msg, cls = 'ls') {
+            const box  = document.getElementById('log-box');
+            const time = new Date().toLocaleTimeString([], { hour12: false });
+            const div  = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="lt">[${time}]</span> <span class="${cls}">${msg}</span>`;
+            box.prepend(div);
         }
     </script>
 </body>
